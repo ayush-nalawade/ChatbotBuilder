@@ -1,0 +1,252 @@
+{
+  "nodes": [
+    {
+      "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "type": "message",
+      "data": {
+        "message": "Welcome to MegaStore! 🛍️ How can we help you today?"
+      },
+      "next": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"
+    },
+    {
+      "id": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+      "type": "buttons",
+      "data": {
+        "message": "Please select an option:",
+        "buttons": [
+          {
+            "id": "btn_shop",
+            "title": "Shop Products",
+            "next": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f"
+          },
+          {
+            "id": "btn_support",
+            "title": "Customer Support",
+            "next": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a"
+          },
+          {
+            "id": "btn_track",
+            "title": "Track Order",
+            "next": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b"
+          }
+        ]
+      },
+      "next": null
+    },
+
+    {
+      "id": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+      "type": "list",
+      "data": {
+        "message": "Browse our categories:",
+        "button_text": "View Categories",
+        "sections": [
+          {
+            "title": "Electronics",
+            "rows": [
+              {
+                "id": "cat_phones",
+                "title": "Smartphones",
+                "description": "Latest models",
+                "next": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c"
+              },
+              {
+                "id": "cat_laptops",
+                "title": "Laptops",
+                "description": "Work & Gaming",
+                "next": "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+              }
+            ]
+          },
+          {
+            "title": "Fashion",
+            "rows": [
+              {
+                "id": "cat_men",
+                "title": "Men's Wear",
+                "description": "Casual & Formal",
+                "next": "1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"
+              },
+              {
+                "id": "cat_women",
+                "title": "Women's Wear",
+                "description": "Trending styles",
+                "next": "1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"
+              }
+            ]
+          }
+        ]
+      },
+      "next": null
+    },
+
+    {
+      "id": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+      "type": "message",
+      "data": {
+        "message": "🔥 Trending: iPhone 16 Pro - $999. Do you want to buy it?"
+      },
+      "next": "2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f"
+    },
+    {
+      "id": "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+      "type": "message",
+      "data": {
+        "message": "💻 Top Pick: MacBook Air M3 - $1299. Do you want to buy it?"
+      },
+      "next": "2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f"
+    },
+    {
+      "id": "1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+      "type": "message",
+      "data": {
+        "message": "👕 Summer Collection is 50% off! Interested?"
+      },
+      "next": "2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f"
+    },
+
+    {
+      "id": "2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f",
+      "type": "buttons",
+      "data": {
+        "message": "Confirm your interest:",
+        "variable_name": "purchase_intent",
+        "buttons": [
+          {
+            "id": "yes_buy",
+            "title": "Yes, I want it!",
+            "next": "aa11bb22-cc33-4dd4-ee55-ff6677889900"
+          },
+          {
+            "id": "no_browse",
+            "title": "No, keep browsing",
+            "next": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f"
+          }
+        ]
+      },
+      "next": null
+    },
+
+    {
+      "id": "aa11bb22-cc33-4dd4-ee55-ff6677889900",
+      "type": "question",
+      "data": {
+        "question": "Are you a returning customer? Please enter your registered email (or type 'new' if you're new):",
+        "variable_name": "user_email",
+        "validation_type": "text"
+      },
+      "next": "bb22cc33-dd44-4ee5-ff66-778899001122"
+    },
+
+    {
+      "id": "bb22cc33-dd44-4ee5-ff66-778899001122",
+      "type": "condition",
+      "data": {
+        "conditions": [
+          {
+            "variable": "user_email",
+            "operator": "equals",
+            "value": "new",
+            "next": "cc33dd44-ee55-4ff6-aa77-889900112233"
+          }
+        ],
+        "default_next": "dd44ee55-ff66-4aa7-bb88-990011223344"
+      },
+      "next": null
+    },
+
+    {
+      "id": "cc33dd44-ee55-4ff6-aa77-889900112233",
+      "type": "question",
+      "data": {
+        "question": "Welcome, new customer! Please enter your email address for the invoice:",
+        "variable_name": "user_email",
+        "validation_type": "email",
+        "error_message": "That doesn't look like a valid email. Please try again."
+      },
+      "next": "ee55ff66-aa77-4bb8-cc99-001122334455"
+    },
+
+    {
+      "id": "dd44ee55-ff66-4aa7-bb88-990011223344",
+      "type": "message",
+      "data": {
+        "message": "Welcome back! We found your account for {{user_email}}. 🎉"
+      },
+      "next": "ee55ff66-aa77-4bb8-cc99-001122334455"
+    },
+
+    {
+      "id": "ee55ff66-aa77-4bb8-cc99-001122334455",
+      "type": "delay",
+      "data": {
+        "delay_seconds": 2
+      },
+      "next": "3d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a"
+    },
+
+    {
+      "id": "3d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a",
+      "type": "message",
+      "data": {
+        "message": "✅ Your order is confirmed! Invoice will be sent to {{user_email}}. Thank you for shopping with MegaStore!"
+      },
+      "next": "9f8e7d6c-5b4a-3928-1706-564534231209"
+    },
+
+    {
+      "id": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+      "type": "question",
+      "data": {
+        "question": "Please describe your issue in a few words:",
+        "variable_name": "support_issue",
+        "validation_type": "text"
+      },
+      "next": "5f6a7b8c-9d0e-1f2a-3b4c-5d6e7f8a9b0c"
+    },
+    {
+      "id": "5f6a7b8c-9d0e-1f2a-3b4c-5d6e7f8a9b0c",
+      "type": "delay",
+      "data": {
+        "delay_seconds": 1
+      },
+      "next": "ff00aa11-bb22-4cc3-dd44-ee5566778899"
+    },
+    {
+      "id": "ff00aa11-bb22-4cc3-dd44-ee5566778899",
+      "type": "message",
+      "data": {
+        "message": "🎫 Support ticket created for: \"{{support_issue}}\". An agent will contact you shortly."
+      },
+      "next": "9f8e7d6c-5b4a-3928-1706-564534231209"
+    },
+
+    {
+      "id": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
+      "type": "question",
+      "data": {
+        "question": "Please enter your Order ID (e.g., #12345):",
+        "variable_name": "order_id",
+        "validation_type": "text"
+      },
+      "next": "6a7b8c9d-0e1f-2a3b-4c5d-6e7f8a9b0c1d"
+    },
+    {
+      "id": "6a7b8c9d-0e1f-2a3b-4c5d-6e7f8a9b0c1d",
+      "type": "message",
+      "data": {
+        "message": "🚚 Order {{order_id}} is *In Transit*. Expected delivery: Tomorrow."
+      },
+      "next": "9f8e7d6c-5b4a-3928-1706-564534231209"
+    },
+
+    {
+      "id": "9f8e7d6c-5b4a-3928-1706-564534231209",
+      "type": "end",
+      "data": {
+        "message": "Thank you for visiting MegaStore! Have a great day. 👋"
+      }
+    }
+  ],
+  "settings": {}
+}

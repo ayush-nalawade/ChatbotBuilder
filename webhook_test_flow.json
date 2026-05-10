@@ -1,0 +1,145 @@
+{
+  "nodes": [
+    {
+      "id": "a1f3c2d4-1111-4000-8001-aabbcc000001",
+      "type": "start",
+      "data": {
+        "message": "Start"
+      },
+      "position": { "x": 400, "y": 0 },
+      "measured": { "width": 200, "height": 67 },
+      "next": "b2e4d3c5-2222-4001-8002-aabbcc000002"
+    },
+    {
+      "id": "b2e4d3c5-2222-4001-8002-aabbcc000002",
+      "type": "message",
+      "data": {
+        "message": "Welcome! I'm going to collect some info and then fire a webhook to a real external API."
+      },
+      "position": { "x": 400, "y": 130 },
+      "measured": { "width": 250, "height": 150 },
+      "next": "c3f5e4d6-3333-4002-8003-aabbcc000003"
+    },
+    {
+      "id": "c3f5e4d6-3333-4002-8003-aabbcc000003",
+      "type": "question",
+      "data": {
+        "question": "What is your name?",
+        "variable_name": "user_name",
+        "validation_type": "text",
+        "error_message": "Please enter a valid name."
+      },
+      "position": { "x": 400, "y": 340 },
+      "measured": { "width": 250, "height": 284 },
+      "next": "d4a6f5e7-4444-4003-8004-aabbcc000004"
+    },
+    {
+      "id": "d4a6f5e7-4444-4003-8004-aabbcc000004",
+      "type": "question",
+      "data": {
+        "question": "What topic do you want to post about?",
+        "variable_name": "post_title",
+        "validation_type": "text",
+        "error_message": "Please enter a valid topic."
+      },
+      "position": { "x": 400, "y": 680 },
+      "measured": { "width": 250, "height": 284 },
+      "next": "e5b7a6f8-5555-4004-8005-aabbcc000005"
+    },
+    {
+      "id": "e5b7a6f8-5555-4004-8005-aabbcc000005",
+      "type": "webhook",
+      "data": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "{{session.post_title}}",
+          "body": "Submitted by {{session.user_name}} via chatbot",
+          "userId": 1
+        },
+        "response_variable": "webhook_response"
+      },
+      "position": { "x": 400, "y": 1020 },
+      "measured": { "width": 250, "height": 150 },
+      "next": "f6c8b7a9-6666-4005-8006-aabbcc000006"
+    },
+    {
+      "id": "f6c8b7a9-6666-4005-8006-aabbcc000006",
+      "type": "message",
+      "data": {
+        "message": "Webhook fired successfully!\n\nHere is what the external API returned:\nPost ID: {{session.webhook_response.id}}\nTitle: {{session.webhook_response.title}}\nBody: {{session.webhook_response.body}}"
+      },
+      "position": { "x": 400, "y": 1230 },
+      "measured": { "width": 250, "height": 200 },
+      "next": "a7d9c8b0-7777-4006-8007-aabbcc000007"
+    },
+    {
+      "id": "a7d9c8b0-7777-4006-8007-aabbcc000007",
+      "type": "end",
+      "data": {
+        "message": "Webhook test complete! The API responded with a real response. Goodbye!"
+      },
+      "position": { "x": 400, "y": 1490 },
+      "measured": { "width": 250, "height": 123 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "b8e0d9c1-8888-4007-8008-aabbcc000008",
+      "source": "a1f3c2d4-1111-4000-8001-aabbcc000001",
+      "sourceHandle": "source",
+      "target": "b2e4d3c5-2222-4001-8002-aabbcc000002",
+      "targetHandle": "target",
+      "type": "smoothstep",
+      "markerEnd": { "type": "arrowclosed" }
+    },
+    {
+      "id": "c9f1e0d2-9999-4008-8009-aabbcc000009",
+      "source": "b2e4d3c5-2222-4001-8002-aabbcc000002",
+      "sourceHandle": "source",
+      "target": "c3f5e4d6-3333-4002-8003-aabbcc000003",
+      "targetHandle": "target",
+      "type": "smoothstep",
+      "markerEnd": { "type": "arrowclosed" }
+    },
+    {
+      "id": "d0a2f1e3-aaaa-4009-800a-aabbcc00000a",
+      "source": "c3f5e4d6-3333-4002-8003-aabbcc000003",
+      "sourceHandle": "source",
+      "target": "d4a6f5e7-4444-4003-8004-aabbcc000004",
+      "targetHandle": "target",
+      "type": "smoothstep",
+      "markerEnd": { "type": "arrowclosed" }
+    },
+    {
+      "id": "e1b3a2f4-bbbb-400a-800b-aabbcc00000b",
+      "source": "d4a6f5e7-4444-4003-8004-aabbcc000004",
+      "sourceHandle": "source",
+      "target": "e5b7a6f8-5555-4004-8005-aabbcc000005",
+      "targetHandle": "target",
+      "type": "smoothstep",
+      "markerEnd": { "type": "arrowclosed" }
+    },
+    {
+      "id": "f2c4b3a5-cccc-400b-800c-aabbcc00000c",
+      "source": "e5b7a6f8-5555-4004-8005-aabbcc000005",
+      "sourceHandle": "source",
+      "target": "f6c8b7a9-6666-4005-8006-aabbcc000006",
+      "targetHandle": "target",
+      "type": "smoothstep",
+      "markerEnd": { "type": "arrowclosed" }
+    },
+    {
+      "id": "a3d5c4b6-dddd-400c-800d-aabbcc00000d",
+      "source": "f6c8b7a9-6666-4005-8006-aabbcc000006",
+      "sourceHandle": "source",
+      "target": "a7d9c8b0-7777-4006-8007-aabbcc000007",
+      "targetHandle": "target",
+      "type": "smoothstep",
+      "markerEnd": { "type": "arrowclosed" }
+    }
+  ]
+}
