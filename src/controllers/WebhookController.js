@@ -22,7 +22,7 @@ class WebhookController {
      */
     async verifyWhatsApp(req, res) {
         try {
-            global.slashLogs('WhatsApp webhook verification', true, true);
+            console.log('WhatsApp webhook verification', true, true);
             const mode = req.query['hub.mode'];
             const token = req.query['hub.verify_token'];
             const challenge = req.query['hub.challenge'];
@@ -30,14 +30,14 @@ class WebhookController {
             const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN;
     
             if (mode === 'subscribe' && token === verifyToken) {
-                global.slashLogs('WhatsApp webhook verified', true, true);
+                console.log('WhatsApp webhook verified', true, true);
                 res.status(200).send(challenge);
             } else {
-                global.slashLogs('WhatsApp webhook verification failed', true, true);
+                console.log('WhatsApp webhook verification failed', true, true);
                 res.status(403).send('Forbidden');
             }
         } catch (error) {
-            global.slashLogs(`Error verifying WhatsApp webhook: ${error.message}`, true, true);
+            console.log(`Error verifying WhatsApp webhook: ${error.message}`, true, true);
             res.status(500).send('Error');
         }
     }
@@ -54,10 +54,10 @@ class WebhookController {
 
             // Process webhook asynchronously
             this.processWhatsAppWebhook(webhookData).catch((error) => {
-                global.slashLogs(`Error processing WhatsApp webhook: ${error.message}`, true, true);
+                console.log(`Error processing WhatsApp webhook: ${error.message}`, true, true);
             });
         } catch (error) {
-            global.slashLogs(`Error handling WhatsApp webhook: ${error.message}`, true, true);
+            console.log(`Error handling WhatsApp webhook: ${error.message}`, true, true);
             res.status(500).send('Error');
         }
     }
@@ -72,7 +72,7 @@ class WebhookController {
 
             if (messageData) {
 
-                global.slashLogs(`Received WhatsApp message: ${JSON.stringify(messageData)}`, true, true);
+                console.log(`Received WhatsApp message: ${JSON.stringify(messageData)}`, true, true);
 
                 // Find flow for this WhatsApp number
                 const entry          = webhookData.entry?.[0];
@@ -84,7 +84,7 @@ class WebhookController {
                 const flow = await this.findFlowByWhatsApp(phoneNumberId);
 
                 if (!flow) {
-                    global.slashLogs(`No active flow found for WhatsApp number: ${phoneNumberId}`, true, true);
+                    console.log(`No active flow found for WhatsApp number: ${phoneNumberId}`, true, true);
                     return;
                 }
 
@@ -121,7 +121,7 @@ class WebhookController {
 
             if (statusData) {
 
-                global.slashLogs(`Received WhatsApp status update: ${JSON.stringify(statusData)}`, true, true);
+                console.log(`Received WhatsApp status update: ${JSON.stringify(statusData)}`, true, true);
 
                 // Update message delivery status
                 await this.messageRepository.updateByWhatsAppMessageId(
@@ -130,7 +130,7 @@ class WebhookController {
                 );
             }
         } catch (error) {
-            global.slashLogs(`Error processing WhatsApp webhook: ${error.message}`, true, true);
+            console.log(`Error processing WhatsApp webhook: ${error.message}`, true, true);
         }
     }
 
@@ -160,7 +160,7 @@ class WebhookController {
 
             return whatsappFlows[0] || null;
         } catch (error) {
-            global.slashLogs(`Error finding flow by WhatsApp: ${error.message}`, true, true);
+            console.log(`Error finding flow by WhatsApp: ${error.message}`, true, true);
             return null;
         }
     }
@@ -177,14 +177,14 @@ class WebhookController {
             const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN; // Same token for Instagram
 
             if (mode === 'subscribe' && token === verifyToken) {
-                global.slashLogs('Instagram webhook verified', true, true);
+                console.log('Instagram webhook verified', true, true);
                 res.status(200).send(challenge);
             } else {
-                global.slashLogs('Instagram webhook verification failed', true, true);
+                console.log('Instagram webhook verification failed', true, true);
                 res.status(403).send('Forbidden');
             }
         } catch (error) {
-            global.slashLogs(`Error verifying Instagram webhook: ${error.message}`, true, true);
+            console.log(`Error verifying Instagram webhook: ${error.message}`, true, true);
             res.status(500).send('Error');
         }
     }
@@ -196,14 +196,14 @@ class WebhookController {
         try {
             const webhookData = req.body;
 
-            global.slashLogs(`Received Instagram webhook: ${JSON.stringify(webhookData)}`, true, true);
+            console.log(`Received Instagram webhook: ${JSON.stringify(webhookData)}`, true, true);
 
             // Respond quickly
             res.status(200).send('OK');
 
             // TODO: Implement Instagram message processing similar to WhatsApp
         } catch (error) {
-            global.slashLogs(`Error handling Instagram webhook: ${error.message}`, true, true);
+            console.log(`Error handling Instagram webhook: ${error.message}`, true, true);
             res.status(500).send('Error');
         }
     }

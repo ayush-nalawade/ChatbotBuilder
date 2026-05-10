@@ -14,7 +14,7 @@ module.exports = (io) => {
     const flowExecutor     = new FlowExecutor();
 
     io.on('connection', (socket) => {
-        global.slashLogs(`[Socket.IO] Admin connected: ${socket.id}`, true, true);
+        console.log(`[Socket.IO] Admin connected: ${socket.id}`, true, true);
 
         //LIVE MONITOR Admin joins a "room" for a specific flow to receive all live messages
         
@@ -24,7 +24,7 @@ module.exports = (io) => {
         socket.on('admin:join_live', async ({ flowId }) => {
             try {
                 socket.join(`admin:live:${flowId}`);
-                global.slashLogs(`[Socket.IO] Admin ${socket.id} joined live room for flow: ${flowId}`, true, true);
+                console.log(`[Socket.IO] Admin ${socket.id} joined live room for flow: ${flowId}`, true, true);
 
                 // Load current active conversations so panel populates immediately
                 const activeConversations = await conversationRepo.getActiveByFlow(flowId);
@@ -34,7 +34,7 @@ module.exports = (io) => {
                     activeConversations,
                 });
             } catch (error) {
-                global.slashLogs(`[Socket.IO] Error in admin:join_live: ${error.message}`, true, true);
+                console.log(`[Socket.IO] Error in admin:join_live: ${error.message}`, true, true);
                 socket.emit('admin:error', { message: 'Failed to join live room', details: error.message });
             }
         });
@@ -49,7 +49,7 @@ module.exports = (io) => {
          */
         socket.on('admin:takeover', async ({ conversationId }) => {
             try {
-                global.slashLogs(`[Socket.IO] Admin ${socket.id} taking over conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Admin ${socket.id} taking over conversation: ${conversationId}`, true, true);
 
                 // Verify conversation exists
                 const conversation = await conversationRepo.findById(conversationId);
@@ -66,7 +66,7 @@ module.exports = (io) => {
                 // Load full chat history from DB
                 const chatHistory = await messageRepo.getByConversation(conversationId);
 
-                global.slashLogs(`[Socket.IO] Takeover confirmed for conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Takeover confirmed for conversation: ${conversationId}`, true, true);
 
                 socket.emit('admin:takeover_confirmed', {
                     conversationId,
@@ -82,7 +82,7 @@ module.exports = (io) => {
                 });
 
             } catch (error) {
-                global.slashLogs(`[Socket.IO] Error in admin:takeover: ${error.message}`, true, true);
+                console.log(`[Socket.IO] Error in admin:takeover: ${error.message}`, true, true);
                 socket.emit('admin:error', { message: 'Failed to take over conversation', details: error.message });
             }
         });
@@ -98,7 +98,7 @@ module.exports = (io) => {
                     return socket.emit('admin:error', { message: 'Message text is required' });
                 }
 
-                global.slashLogs(`[Socket.IO] Agent sending message to conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Agent sending message to conversation: ${conversationId}`, true, true);
 
                 // Get conversation details
                 const conversation = await conversationRepo.findById(conversationId);
@@ -137,10 +137,10 @@ module.exports = (io) => {
                     message: savedMessage,
                 });
 
-                global.slashLogs(`[Socket.IO] Agent message sent to ${conversation.user_phone}`, true, true);
+                console.log(`[Socket.IO] Agent message sent to ${conversation.user_phone}`, true, true);
 
             } catch (error) {
-                global.slashLogs(`[Socket.IO] Error in admin:send_message: ${error.message}`, true, true);
+                console.log(`[Socket.IO] Error in admin:send_message: ${error.message}`, true, true);
                 socket.emit('admin:error', { message: 'Failed to send message', details: error.message });
             }
         });
@@ -152,7 +152,7 @@ module.exports = (io) => {
          */
         socket.on('admin:handback', async ({ conversationId }) => {
             try {
-                global.slashLogs(`[Socket.IO] Admin handing back conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Admin handing back conversation: ${conversationId}`, true, true);
 
                 const conversation = await conversationRepo.findById(conversationId);
                 if (!conversation) {
@@ -173,10 +173,10 @@ module.exports = (io) => {
                     status: CONVERSATION_STATUS.ACTIVE,
                 });
 
-                global.slashLogs(`[Socket.IO] Bot resumed for conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Bot resumed for conversation: ${conversationId}`, true, true);
 
             } catch (error) {
-                global.slashLogs(`[Socket.IO] Error in admin:handback: ${error.message}`, true, true);
+                console.log(`[Socket.IO] Error in admin:handback: ${error.message}`, true, true);
                 socket.emit('admin:error', { message: 'Failed to handback conversation', details: error.message });
             }
         });
@@ -192,7 +192,7 @@ module.exports = (io) => {
 
         socket.on('admin:accept_agent_request', async ({ conversationId }) => {
             try {
-                global.slashLogs(`[Socket.IO] Admin ${socket.id} accepting agent request: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Admin ${socket.id} accepting agent request: ${conversationId}`, true, true);
 
                 const conversation = await conversationRepo.findById(conversationId);
                 if (!conversation) {
@@ -213,7 +213,7 @@ module.exports = (io) => {
                 if (timer) {
                     clearTimeout(timer.timerId);
                     global.pendingAgentTimers.delete(conversationId);
-                    global.slashLogs(`[Socket.IO] Timeout cancelled for conversation: ${conversationId}`, true, true);
+                    console.log(`[Socket.IO] Timeout cancelled for conversation: ${conversationId}`, true, true);
                 }
 
                 // Atomically upgrade status to HUMAN_TAKEOVER
@@ -243,10 +243,10 @@ module.exports = (io) => {
                     status: CONVERSATION_STATUS.HUMAN_TAKEOVER,
                 });
 
-                global.slashLogs(`[Socket.IO] Agent request accepted for conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Agent request accepted for conversation: ${conversationId}`, true, true);
 
             } catch (error) {
-                global.slashLogs(`[Socket.IO] Error in admin:accept_agent_request: ${error.message}`, true, true);
+                console.log(`[Socket.IO] Error in admin:accept_agent_request: ${error.message}`, true, true);
                 socket.emit('admin:error', { message: 'Failed to accept agent request', details: error.message });
             }
         });
@@ -259,7 +259,7 @@ module.exports = (io) => {
          */
         socket.on('admin:reject_agent_request', async ({ conversationId }) => {
             try {
-                global.slashLogs(`[Socket.IO] Admin ${socket.id} rejecting agent request: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Admin ${socket.id} rejecting agent request: ${conversationId}`, true, true);
 
                 const conversation = await conversationRepo.findById(conversationId);
                 if (!conversation) {
@@ -334,10 +334,10 @@ module.exports = (io) => {
                     socket.to(`admin:live:${conversation.flow_id}`).emit('admin:conversation_completed', { conversationId, status: 'completed' });
                 }
 
-                global.slashLogs(`[Socket.IO] Agent request rejected for conversation: ${conversationId}`, true, true);
+                console.log(`[Socket.IO] Agent request rejected for conversation: ${conversationId}`, true, true);
 
             } catch (error) {
-                global.slashLogs(`[Socket.IO] Error in admin:reject_agent_request: ${error.message}`, true, true);
+                console.log(`[Socket.IO] Error in admin:reject_agent_request: ${error.message}`, true, true);
                 socket.emit('admin:error', { message: 'Failed to reject agent request', details: error.message });
             }
         });
@@ -345,7 +345,7 @@ module.exports = (io) => {
         // DISCONNECT
 
         socket.on('disconnect', (reason) => {
-            global.slashLogs(`[Socket.IO] Admin disconnected: ${socket.id}. Reason: ${reason}`, true, true);
+            console.log(`[Socket.IO] Admin disconnected: ${socket.id}. Reason: ${reason}`, true, true);
             // Socket.IO automatically removes the socket from all rooms on disconnect
         });
     });

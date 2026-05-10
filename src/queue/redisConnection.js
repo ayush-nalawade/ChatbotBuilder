@@ -24,11 +24,11 @@ function createRedisConnection(label = 'default') {
     });
 
     conn.on('connect', () => {
-        global.slashLogs(`[Redis:${label}] Connected`, true, true);
+        console.log(`[Redis:${label}] Connected`, true, true);
     });
 
     conn.on('error', (err) => {
-        global.slashLogs(`[Redis:${label}] Connection error: ${err.message}`, true, true);
+        console.log(`[Redis:${label}] Connection error: ${err.message}`, true, true);
     });
 
     return conn;

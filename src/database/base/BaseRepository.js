@@ -43,13 +43,13 @@ class BaseRepository {
 
             await this.db.execute(query, values);
 
-            global.slashLogs(`Record created in ${this.tableName}`, true, true);
+            console.log(`Record created in ${this.tableName}`, true, true);
 
             return record;
 
         } catch (error) {
 
-            global.slashLogs(`Error creating record in ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error creating record in ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to create record in ${this.tableName}`, error);
         }
     }
@@ -66,10 +66,10 @@ class BaseRepository {
                 return null;
             }
 
-            global.slashLogs(`Record found in ${this.tableName}`, true, true);
+            console.log(`Record found in ${this.tableName}`, true, true);
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error finding record by ID in ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error finding record by ID in ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to find record in ${this.tableName}`, error);
         }
     }
@@ -88,10 +88,10 @@ class BaseRepository {
                 return null;
             }
             
-            global.slashLogs(`Record found in ${this.tableName}`, true, true);
+            console.log(`Record found in ${this.tableName}`, true, true);
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error finding one record in ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error finding one record in ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to find record in ${this.tableName}`, error);
         }
     }
@@ -111,7 +111,7 @@ class BaseRepository {
             const result = await this.db.execute(query, values);
             return result.rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error finding records in ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error finding records in ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to find records in ${this.tableName}`, error);
         }
     }
@@ -154,7 +154,7 @@ class BaseRepository {
 
             await this.db.execute(query, values);
 
-            global.slashLogs(`Record updated in ${this.tableName}`, true, true);
+            console.log(`Record updated in ${this.tableName}`, true, true);
 
             // Return updated record
             return this.findById(id);
@@ -162,7 +162,7 @@ class BaseRepository {
             if (error instanceof NotFoundError) {
                 throw error;
             }
-            global.slashLogs(`Error updating record in ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error updating record in ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to update record in ${this.tableName}`, error);
         }
     }
@@ -175,21 +175,21 @@ class BaseRepository {
             // Check if record exists
             const existing = await this.findById(id);
             if (!existing) {
-                global.slashLogs(`Record not found in ${this.tableName}: ${id}`, true, true);
+                console.log(`Record not found in ${this.tableName}: ${id}`, true, true);
                 throw new NotFoundError(this.tableName, id);
             }
 
             const query = `DELETE FROM ${this.tableName} WHERE ${this.getPrimaryKey()} = ?`;
             await this.db.execute(query, [id]);
 
-            global.slashLogs(`Record deleted from ${this.tableName}: ${id}`, true, true);
+            console.log(`Record deleted from ${this.tableName}: ${id}`, true, true);
             return true;
         } catch (error) {
             if (error instanceof NotFoundError) {
-                global.slashLogs(`Record not found in ${this.tableName}: ${id}`, true, true);
+                console.log(`Record not found in ${this.tableName}: ${id}`, true, true);
                 throw error;
             }
-            global.slashLogs(`Error deleting record from ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error deleting record from ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to delete record from ${this.tableName}`, error);
         }
     }
@@ -227,10 +227,10 @@ class BaseRepository {
 
             await this.db.batch(queries);
 
-            global.slashLogs(`Batch inserted ${records.length} records into ${this.tableName}`, true, true);
+            console.log(`Batch inserted ${records.length} records into ${this.tableName}`, true, true);
             return processedRecords;
         } catch (error) {
-            global.slashLogs(`Error batch inserting records into ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error batch inserting records into ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to batch insert records into ${this.tableName}`, error);
         }
     }
@@ -243,7 +243,7 @@ class BaseRepository {
             const result = await this.db.execute(query, params);
             return result;
         } catch (error) {
-            global.slashLogs(`Error executing query on ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error executing query on ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to execute query on ${this.tableName}`, error);
         }
     }
@@ -259,7 +259,7 @@ class BaseRepository {
             const result = await this.db.execute(query, values);
             return parseInt(result.rows[0].count, 10);
         } catch (error) {
-            global.slashLogs(`Error counting records in ${this.tableName}: ${error.message}`, true, true);
+            console.log(`Error counting records in ${this.tableName}: ${error.message}`, true, true);
             throw new DatabaseError(`Failed to count records in ${this.tableName}`, error);
         }
     }

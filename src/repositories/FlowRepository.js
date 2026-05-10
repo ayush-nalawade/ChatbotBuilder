@@ -48,7 +48,7 @@ class FlowRepository extends BaseRepository {
 
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error getting flow by WhatsApp number ${error.message}`, true, true);
+            console.log(`Error getting flow by WhatsApp number ${error.message}`, true, true);
             throw error;
         }
     }
@@ -71,7 +71,7 @@ class FlowRepository extends BaseRepository {
 
             return otherFlows.length > 0;
         } catch (error) {
-            global.slashLogs(`Error checking WhatsApp number ${error.message}`, true, true);
+            console.log(`Error checking WhatsApp number ${error.message}`, true, true);
             throw error;
         }
     }
@@ -94,7 +94,7 @@ class FlowRepository extends BaseRepository {
 
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error getting flow by Instagram username ${error.message}`, true, true);
+            console.log(`Error getting flow by Instagram username ${error.message}`, true, true);
             throw error;
         }
     }
@@ -128,7 +128,7 @@ class FlowRepository extends BaseRepository {
                 });
             }
         } catch (error) {
-            global.slashLogs(`Error incrementing conversation count ${error.message}`, true, true);
+            console.log(`Error incrementing conversation count ${error.message}`, true, true);
         }
     }
 
@@ -142,7 +142,7 @@ class FlowRepository extends BaseRepository {
                 });
             }
         } catch (error) {
-            global.slashLogs(`Error incrementing message count ${error.message}`, true, true);
+            console.log(`Error incrementing message count ${error.message}`, true, true);
         }
     }
 
@@ -152,7 +152,7 @@ class FlowRepository extends BaseRepository {
             const result = await this.db.execute(query, params);
             return result.rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error getting flows by status ${error.message}`, true, true);
+            console.log(`Error getting flows by status ${error.message}`, true, true);
             throw error;
         }
     }

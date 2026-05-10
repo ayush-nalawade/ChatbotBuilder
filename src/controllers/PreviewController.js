@@ -32,7 +32,7 @@ class PreviewController {
             const { flow_id} = req.body;
             const userId = req.user.id || "d065df86-708c-46b3-999d-68e0e2e43643";
             
-            global.slashLogs(`Starting preview session for flow: ${flow_id}`, true, true);
+            console.log(`Starting preview session for flow: ${flow_id}`, true, true);
 
             // Get flow and verify ownership
             const flow = await this.flowRepository.findById(flow_id);
@@ -44,7 +44,7 @@ class PreviewController {
             const flowUserId = stringify(flow.user_id.buffer);
 
             if (flowUserId !== userId) {
-                global.slashLogs(`User ${userId} does not have access to flow ${flow_id}`, true, true);
+                console.log(`User ${userId} does not have access to flow ${flow_id}`, true, true);
                 throw new AuthorizationError('You do not have access to this flow');
             }
 
@@ -68,7 +68,7 @@ class PreviewController {
                 status: CONVERSATION_STATUS.ACTIVE,
             };
             
-            global.slashLogs(`Creating conversation with data: ${JSON.stringify(conversationData)}`, true, true);
+            console.log(`Creating conversation with data: ${JSON.stringify(conversationData)}`, true, true);
             const conversation = await this.conversationRepository.createConversation(conversationData);
 
             // Store preview service for this session
@@ -86,7 +86,7 @@ class PreviewController {
             // Get all messages sent during initialization
             const messages = await this.messageRepository.getByConversation(conversation.conversation_id);
 
-            global.slashLogs(`Preview session started: ${conversation.conversation_id}`, true, true);
+            console.log(`Preview session started: ${conversation.conversation_id}`, true, true);
 
             res.status(201).json({
                 success: true,
@@ -96,7 +96,7 @@ class PreviewController {
                 current_node_id: conversation.current_node_id,
             });
         } catch (error) {
-            global.slashLogs(`Error in startPreview: ${error.message}`, true, true);
+            console.log(`Error in startPreview: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -110,7 +110,7 @@ class PreviewController {
             const { message, type, interactive } = req.body;
             const userId = req.user.id;
 
-            global.slashLogs(`Preview message received for session: ${sessionId}`, true, true);
+            console.log(`Preview message received for session: ${sessionId}`, true, true);
 
             // Get conversation
             const conversation = await this.conversationRepository.findById(sessionId);
@@ -140,7 +140,7 @@ class PreviewController {
             previewService.clearMessages();
 
             // Extract user input based on message type (similar to WhatsApp webhook handling)
-            global.slashLogs(`Request payload - type: ${type}, message: ${message}, interactive: ${JSON.stringify(interactive)}`, true, true);
+            console.log(`Request payload - type: ${type}, message: ${message}, interactive: ${JSON.stringify(interactive)}`, true, true);
             
             let userInput = null;
             if (type === 'text' || !type) {
@@ -149,10 +149,10 @@ class PreviewController {
             } else if (type === 'interactive') {
                 // Button or list selection - extract the ID
                 userInput = interactive?.button_reply?.id || interactive?.list_reply?.id || message;
-                global.slashLogs(`Interactive response detected: ${userInput}`, true, true);
+                console.log(`Interactive response detected: ${userInput}`, true, true);
             }
 
-            global.slashLogs(`Final userInput to be processed: ${userInput}`, true, true);
+            console.log(`Final userInput to be processed: ${userInput}`, true, true);
 
             // Process message through flow executor
             await this.flowExecutor.processMessage(
@@ -181,7 +181,7 @@ class PreviewController {
                 current_node_id: updatedConversation.current_node_id,
             });
         } catch (error) {
-            global.slashLogs(`Error in sendMessage: ${error.message}`, true, true);
+            console.log(`Error in sendMessage: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -194,7 +194,7 @@ class PreviewController {
             const { sessionId } = req.params;
             const userId = req.user.id;
 
-            global.slashLogs(`Fetching messages for preview session: ${sessionId}`, true, true);
+            console.log(`Fetching messages for preview session: ${sessionId}`, true, true);
 
             // Get conversation
             const conversation = await this.conversationRepository.findById(sessionId);
@@ -223,7 +223,7 @@ class PreviewController {
                 current_node_id: conversation.current_node_id,
             });
         } catch (error) {
-            global.slashLogs(`Error in getMessages: ${error.message}`, true, true);
+            console.log(`Error in getMessages: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -236,7 +236,7 @@ class PreviewController {
             const { sessionId } = req.params;
             const userId = req.user.id;
 
-            global.slashLogs(`Resetting preview session: ${sessionId}`, true, true);
+            console.log(`Resetting preview session: ${sessionId}`, true, true);
 
             // Get conversation
             const conversation = await this.conversationRepository.findById(sessionId);
@@ -287,7 +287,7 @@ class PreviewController {
             // Get initial messages
             const messages = await this.messageRepository.getByConversation(sessionId);
 
-            global.slashLogs(`Preview session reset complete`, true, true);
+            console.log(`Preview session reset complete`, true, true);
 
             res.json({
                 success: true,
@@ -297,7 +297,7 @@ class PreviewController {
                 current_node_id: 'start',
             });
         } catch (error) {
-            global.slashLogs(`Error in resetPreview: ${error.message}`, true, true);
+            console.log(`Error in resetPreview: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -310,7 +310,7 @@ class PreviewController {
             const { sessionId } = req.params;
             const userId = req.user.id;
 
-            global.slashLogs(`Ending preview session: ${sessionId}`, true, true);
+            console.log(`Ending preview session: ${sessionId}`, true, true);
 
             // Get conversation
             const conversation = await this.conversationRepository.findById(sessionId);
@@ -335,14 +335,14 @@ class PreviewController {
             // Clean up preview service
             this.previewSessions.delete(sessionId);
 
-            global.slashLogs(`Preview session ended`, true, true);
+            console.log(`Preview session ended`, true, true);
 
             res.json({
                 success: true,
                 message: 'Preview session ended',
             });
         } catch (error) {
-            global.slashLogs(`Error in endPreview: ${error.message}`, true, true);
+            console.log(`Error in endPreview: ${error.message}`, true, true);
             throw error;
         }
     }

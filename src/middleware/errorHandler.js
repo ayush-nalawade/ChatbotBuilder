@@ -9,17 +9,17 @@ const { HTTP_STATUS } = require('../config/constants');
 const errorHandler = (err, req, res, next) => {
     // Log error
     
-    global.slashLogs('Error occurred in errorHandler middleware', true, true);
+    console.log('Error occurred in errorHandler middleware', true, true);
 
     // Handle known application errors
     if (err instanceof AppError) {
-        global.slashLogs('Error occurred in appError middleware', true, true);
+        console.log('Error occurred in appError middleware', true, true);
         return res.status(err.statusCode).json(err.toJSON());
     }
 
     // Handle validation errors from Joi
     if (err.name === 'ValidationError' && err.isJoi) {
-        global.slashLogs('Error occurred in Joi middleware', true, true);
+        console.log('Error occurred in Joi middleware', true, true);
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
             error: {
                 code: 'VALIDATION_ERROR',
@@ -34,7 +34,7 @@ const errorHandler = (err, req, res, next) => {
 
     // Handle JWT errors
     if (err.name === 'JsonWebTokenError') {
-        global.slashLogs('Error occurred in jwt middleware', true, true);
+        console.log('Error occurred in jwt middleware', true, true);
         return res.status(HTTP_STATUS.UNAUTHORIZED).json({
             error: {
                 code: 'UNAUTHORIZED',
@@ -44,7 +44,7 @@ const errorHandler = (err, req, res, next) => {
     }
 
     if (err.name === 'TokenExpiredError') {
-        global.slashLogs('Error occurred in jwt middleware', true, true);
+        console.log('Error occurred in jwt middleware', true, true);
         return res.status(HTTP_STATUS.UNAUTHORIZED).json({
             error: {
                 code: 'UNAUTHORIZED',
@@ -55,7 +55,7 @@ const errorHandler = (err, req, res, next) => {
 
     // Handle Cassandra/ScyllaDB errors
     if (err.name === 'ResponseError') {
-        global.slashLogs('Error occurred in scylladb middleware', true, true);
+        console.log('Error occurred in scylladb middleware', true, true);
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             error: {
                 code: 'DATABASE_ERROR',
@@ -84,7 +84,7 @@ const errorHandler = (err, req, res, next) => {
  * 404 Not Found Handler
  */
 const notFoundHandler = (req, res) => {
-    global.slashLogs('Error occurred in notFoundHandler middleware', true, true);
+    console.log('Error occurred in notFoundHandler middleware', true, true);
     res.status(HTTP_STATUS.NOT_FOUND).json({
         error: {
             code: 'NOT_FOUND',

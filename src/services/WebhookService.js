@@ -18,8 +18,8 @@ class WebhookService {
             : url;
 
         try {
-            global.slashLogs(`Calling webhook ${resolvedUrl}: ${JSON.stringify({ webhookConfig, conversation, additionalData })}`, true, true);
-            global.slashLogs(`Webhook body: ${JSON.stringify({ ...body, ...additionalData })}`, true, true);
+            console.log(`Calling webhook ${resolvedUrl}: ${JSON.stringify({ webhookConfig, conversation, additionalData })}`, true, true);
+            console.log(`Webhook body: ${JSON.stringify({ ...body, ...additionalData })}`, true, true);
 
             const response = await retryWithBackoff(
                 async () => {
@@ -39,7 +39,7 @@ class WebhookService {
                 parseInt(process.env.WEBHOOK_MAX_RETRIES || '3', 10)
             );
 
-            global.slashLogs(`Webhook call successful ${resolvedUrl}`, true, true);
+            console.log(`Webhook call successful ${resolvedUrl}`, true, true);
 
             return {
                 success: true,
@@ -48,7 +48,7 @@ class WebhookService {
                 headers: response.headers,
             };
         } catch (error) {
-            global.slashLogs(`Webhook call failed ${url}`, true, true);
+            console.log(`Webhook call failed ${url}`, true, true);
 
             throw new ExternalAPIError('Webhook', error.message, error.response?.status);
         }
@@ -109,7 +109,7 @@ class WebhookService {
 
             return response.status < 500;
         } catch (error) {
-            global.slashLogs(`Webhook connection test failed ${url}`, true, true);
+            console.log(`Webhook connection test failed ${url}`, true, true);
             return false;
         }
     }

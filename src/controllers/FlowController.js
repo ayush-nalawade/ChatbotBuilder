@@ -19,7 +19,7 @@ class FlowController {
             // Validate flow structure
             const validation = validateFlowStructure(flow_data);
             if (!validation.isValid) {
-                global.slashLogs("Invalid flow structure", true, true);
+                console.log("Invalid flow structure", true, true);
                 throw new ValidationError('Invalid flow structure', validation.errors);
             }
 
@@ -38,11 +38,11 @@ class FlowController {
             // Increment user's flow count
             await this.userRepository.incrementFlowCount(req.user.id);
 
-            global.slashLogs("Flow created successfully", true, true);
+            console.log("Flow created successfully", true, true);
 
             res.status(201).json({ flow });
         } catch (error) {
-            global.slashLogs(`Error in createFlow: ${error.message}`, true, true);
+            console.log(`Error in createFlow: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -52,11 +52,11 @@ class FlowController {
      */
     async getFlows(req, res) {
         try {
-            global.slashLogs("Fetching flows for user", true, true);
+            console.log("Fetching flows for user", true, true);
             const flows = await this.flowRepository.getFlowsByUser(req.user.id);
             res.json({ flows });
         } catch (error) {
-            global.slashLogs(`Error in getFlows: ${error.message}`, true, true);
+            console.log(`Error in getFlows: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -66,7 +66,7 @@ class FlowController {
      */
     async getFlow(req, res) {
         try {
-            global.slashLogs("Fetching flow by ID", true, true);
+            console.log("Fetching flow by ID", true, true);
             const { id } = req.params;
 
             const flow = await this.flowRepository.findById(id);
@@ -81,7 +81,7 @@ class FlowController {
 
             res.json({ flow });
         } catch (error) {
-            global.slashLogs(`Error in getFlow: ${error.message}`, true, true);
+            console.log(`Error in getFlow: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -94,7 +94,7 @@ class FlowController {
             const { id } = req.params;
             const updates = req.body;
             
-            global.slashLogs("Updating flow", true, true);
+            console.log("Updating flow", true, true);
             // Get existing flow
             const flow = await this.flowRepository.findById(id);
             if (!flow) {
@@ -122,11 +122,11 @@ class FlowController {
             // Update flow
             const updatedFlow = await this.flowRepository.update(id, updates);
 
-            global.slashLogs("Flow updated", true, true);
+            console.log("Flow updated", true, true);
 
             res.json({ flow: updatedFlow });
         } catch (error) {
-            global.slashLogs(`Error in updateFlow: ${error.message}`, true, true);
+            console.log(`Error in updateFlow: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -136,7 +136,7 @@ class FlowController {
      */
     async deleteFlow(req, res) {
         try {
-            global.slashLogs("Deleting flow", true, true);
+            console.log("Deleting flow", true, true);
             
             const { id } = req.params;
 
@@ -157,11 +157,11 @@ class FlowController {
             // Decrement user's flow count
             await this.userRepository.decrementFlowCount(req.user.id);
 
-            global.slashLogs("Flow deleted successfully", true, true);
+            console.log("Flow deleted successfully", true, true);
 
             res.status(200).json({"message": "Flow deleted successfully"});
         } catch (error) {
-            global.slashLogs(`Error in deleteFlow: ${error.message}`, true, true);
+            console.log(`Error in deleteFlow: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -171,7 +171,7 @@ class FlowController {
      */
     async publishFlow(req, res) {
         try {
-            global.slashLogs("Publishing flow", true, true);
+            console.log("Publishing flow", true, true);
 
             const { id } = req.params;
             const { whatsapp_number } = req.body;
@@ -196,11 +196,11 @@ class FlowController {
             // Publish flow
             const publishedFlow = await this.flowRepository.publishFlow(id, whatsapp_number);
 
-            global.slashLogs("Flow published successfully", true, true);
+            console.log("Flow published successfully", true, true);
 
             res.json({ flow: publishedFlow });
         } catch (error) {
-            global.slashLogs(`Error in publishFlow: ${error.message}`, true, true);
+            console.log(`Error in publishFlow: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -210,7 +210,7 @@ class FlowController {
      */
     async unpublishFlow(req, res) {
         try {
-            global.slashLogs("Unpublishing flow", true, true);
+            console.log("Unpublishing flow", true, true);
 
             const { id } = req.params;
 
@@ -228,11 +228,11 @@ class FlowController {
             // Unpublish flow and clear whatsapp_number
             const unpublishedFlow = await this.flowRepository.unpublishFlow(id);
 
-            global.slashLogs("Flow unpublished", true, true);
+            console.log("Flow unpublished", true, true);
 
             res.json({ flow: unpublishedFlow });
         } catch (error) {
-            global.slashLogs(`Error in unpublishFlow: ${error.message}`, true, true);
+            console.log(`Error in unpublishFlow: ${error.message}`, true, true);
             throw error;
         }
     }

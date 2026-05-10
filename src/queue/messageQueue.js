@@ -25,7 +25,7 @@ const messageQueue = new Queue(QUEUE_NAME, {
     },
 });
 
-// global.slashLogs('[MessageQueue] WhatsApp message queue initialized', true, true);
+// console.log('[MessageQueue] WhatsApp message queue initialized', true, true);
 
 module.exports = { messageQueue, QUEUE_NAME };
 

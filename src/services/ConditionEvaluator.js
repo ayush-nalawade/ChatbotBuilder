@@ -12,7 +12,7 @@ class ConditionEvaluator {
 
             return this.compareValues(variableValue, condition.operator, condition.value);
         } catch (error) {
-            global.slashLogs(`Error evaluating condition ${error.message}`, true, true);
+            console.log(`Error evaluating condition ${error.message}`, true, true);
             return false;
         }
     }
@@ -98,12 +98,12 @@ class ConditionEvaluator {
                     const regex = new RegExp(right);
                     return regex.test(left);
                 } catch (error) {
-                    global.slashLogs(`Invalid regex pattern ${error.message}`, true, true);
+                    console.log(`Invalid regex pattern ${error.message}`, true, true);
                     return false;
                 }
 
             default:
-                global.slashLogs(`Unknown operator ${error.message}`, true, true);
+                console.log(`Unknown operator ${error.message}`, true, true);
                 return false;
         }
     }

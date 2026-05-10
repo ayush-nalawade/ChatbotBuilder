@@ -27,10 +27,10 @@ class WhatsAppService {
                 text: { body: text },
             });
 
-            global.slashLogs(`Text message sent: ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
+            console.log(`Text message sent: ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to send text message: ${to} for error: ${error.message}`, true, true);
+            console.log(`Failed to send text message: ${to} for error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -66,10 +66,10 @@ class WhatsAppService {
                 },
             });
 
-            global.slashLogs(`Button message sent: ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
+            console.log(`Button message sent: ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to send button message: ${to} for error: ${error.message}`, true, true);
+            console.log(`Failed to send button message: ${to} for error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -103,10 +103,10 @@ class WhatsAppService {
                 },
             });
 
-            global.slashLogs(`List message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
+            console.log(`List message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to send list message ${to} for error: ${error.message}`, true, true);
+            console.log(`Failed to send list message ${to} for error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -127,10 +127,10 @@ class WhatsAppService {
                 },
             });
 
-            global.slashLogs(`Image message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
+            console.log(`Image message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to send image message ${to} for error: ${error.message}`, true, true);
+            console.log(`Failed to send image message ${to} for error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -152,10 +152,10 @@ class WhatsAppService {
                 },
             });
 
-            global.slashLogs(`Document message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
+            console.log(`Document message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to send document message ${to} for error: ${error.message}`, true, true);
+            console.log(`Failed to send document message ${to} for error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -176,10 +176,10 @@ class WhatsAppService {
                 },
             });
 
-            global.slashLogs(`Video message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
+            console.log(`Video message sent ${to} for messageId: ${response.messages?.[0]?.id}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to send video message ${to} for error: ${error.message}`, true, true);
+            console.log(`Failed to send video message ${to} for error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -206,10 +206,10 @@ class WhatsAppService {
 
             const response = await this.makeRequest('POST', `/groups`, payload);
 
-            global.slashLogs(`Group created: ${subject} with response: ${JSON.stringify(response)}`, true, true);
+            console.log(`Group created: ${subject} with response: ${JSON.stringify(response)}`, true, true);
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to create group ${subject} error: ${error.message}`, true, true);
+            console.log(`Failed to create group ${subject} error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -227,7 +227,7 @@ class WhatsAppService {
 
             return response;
         } catch (error) {
-            global.slashLogs(`Failed to mark message as read ${messageId} for error: ${error.message}`, true, true);
+            console.log(`Failed to mark message as read ${messageId} for error: ${error.message}`, true, true);
             // Don't throw, this is not critical
         }
     }
@@ -255,7 +255,7 @@ class WhatsAppService {
             const errorMessage = error.response?.data?.error?.message || error.message;
             const errorCode = error.response?.data?.error?.code;
 
-            global.slashLogs(`WhatsApp API error: ${errorMessage} for code: ${errorCode} and endpoint: ${endpoint}`, true, true);
+            console.log(`WhatsApp API error: ${errorMessage} for code: ${errorCode} and endpoint: ${endpoint}`, true, true);
 
             throw new ExternalAPIError('WhatsApp', errorMessage, error.response?.status);
         }
@@ -280,7 +280,7 @@ class WhatsAppService {
      */
     static parseIncomingMessage(webhookData) {
         try {
-            global.slashLogs('Incoming webhook message parsing', true, true);
+            console.log('Incoming webhook message parsing', true, true);
             const entry = webhookData.entry?.[0];
             const change = entry?.changes?.[0];
             const value = change?.value;
@@ -308,7 +308,7 @@ class WhatsAppService {
                 contacts     : message.contacts,
             };
         } catch (error) {
-            global.slashLogs('Error parsing incoming message', true, true);
+            console.log('Error parsing incoming message', true, true);
             return null;
         }
     }
@@ -336,7 +336,7 @@ class WhatsAppService {
                 errors: status.errors,
             };
         } catch (error) {
-            global.slashLogs('Error parsing status update', true, true);
+            console.log('Error parsing status update', true, true);
             return null;
         }
     }

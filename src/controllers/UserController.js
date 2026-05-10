@@ -40,7 +40,7 @@ class UserController {
             const accessToken = generateAccessToken({ userId: user.user_id, email: user.email });
             const refreshToken = generateRefreshToken({ userId: user.user_id });
 
-            global.slashLogs("User registered", true, true);
+            console.log("User registered", true, true);
 
             res.status(201).json({
                 user,
@@ -50,7 +50,7 @@ class UserController {
                 },
             });
         } catch (error) {
-            global.slashLogs(`Error in register: ${error.message}`, true, true);
+            console.log(`Error in register: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -78,7 +78,7 @@ class UserController {
             const accessToken = generateAccessToken({ userId: user.user_id, email: user.email });
             const refreshToken = generateRefreshToken({ userId: user.user_id });
 
-            global.slashLogs("User logged in", true, true);
+            console.log("User logged in", true, true);
 
             const { password_hash, ...safeUser } = user;
 
@@ -90,7 +90,7 @@ class UserController {
                 },
             });
         } catch (error) {
-            global.slashLogs(`Error in login: ${error.message}`, true, true);
+            console.log(`Error in login: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -117,7 +117,7 @@ class UserController {
                 access_token: accessToken,
             });
         } catch (error) {
-            global.slashLogs(`Error in refreshToken: ${error.message}`, true, true);
+            console.log(`Error in refreshToken: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -135,7 +135,7 @@ class UserController {
 
             res.json({ user });
         } catch (error) {
-            global.slashLogs(`Error in getProfile: ${error.message}`, true, true);
+            console.log(`Error in getProfile: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -150,11 +150,11 @@ class UserController {
             const user = await this.userRepository.update(req.user.id, updates);
             const safeUser = await this.userRepository.getSafeUserById(req.user.id);
 
-            global.slashLogs("User profile updated", true, true);
+            console.log("User profile updated", true, true);
 
             res.json({ user: safeUser });
         } catch (error) {
-            global.slashLogs(`Error in updateProfile: ${error.message}`, true, true);
+            console.log(`Error in updateProfile: ${error.message}`, true, true);
             throw error;
         }
     }

@@ -6,7 +6,6 @@ const routes                            = require('./routes');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { addRequestId, requestLogger }   = require('./middleware/requestLogger');
 const { apiLimiter }                    = require('./middleware/rateLimiter');
-const slashUtils                        = require('slashUtils').init();
 require('dotenv').config();
 require('express-async-errors');
 

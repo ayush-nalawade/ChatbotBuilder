@@ -25,7 +25,7 @@ class FlowExecutor {
     // Process incoming message
     async processMessage(flowId, userPhone, userName, messageText, platformUserId, channel = 'whatsapp', isPreview = false, previewService = null, displayText = null) {
         try {
-            global.slashLogs(`Processing message: ${JSON.stringify({ flowId, userPhone, messageText })}`, true, true);
+            console.log(`Processing message: ${JSON.stringify({ flowId, userPhone, messageText })}`, true, true);
 
             // Get or create conversation
             let conversation = await this.conversationRepository.getActiveConversation(userPhone, flowId);
@@ -36,7 +36,7 @@ class FlowExecutor {
                 const takeoverConversation = await this.conversationRepository.findHumanTakeoverByPhone(userPhone, flowId);
 
                 if (takeoverConversation) {
-                    global.slashLogs(`[HUMAN TAKEOVER] Message from ${userPhone} forwarded to agent (conversationId: ${takeoverConversation.conversation_id})`, true, true);
+                    console.log(`[HUMAN TAKEOVER] Message from ${userPhone} forwarded to agent (conversationId: ${takeoverConversation.conversation_id})`, true, true);
 
                     // Save user message to DB so history is preserved
                     await this.messageRepository.createMessage({
@@ -71,7 +71,7 @@ class FlowExecutor {
                 const pendingConversation = await this.conversationRepository.findPendingAgentByPhone(userPhone, flowId);
 
                 if (pendingConversation) {
-                    global.slashLogs(`[PENDING AGENT] Message from ${userPhone} received while waiting for agent. Saving silently.`, true, true);
+                    console.log(`[PENDING AGENT] Message from ${userPhone} received while waiting for agent. Saving silently.`, true, true);
 
                     // Save message so admin/agent sees it when they accept
                     await this.messageRepository.createMessage({
@@ -106,7 +106,7 @@ class FlowExecutor {
                 const isProfane = await ProfanityService.check(messageText);
 
                 if (isProfane) {
-                    global.slashLogs(`Profanity detected in first message from ${userPhone}: "${messageText}" — conversation blocked`, true, true);
+                    console.log(`Profanity detected in first message from ${userPhone}: "${messageText}" — conversation blocked`, true, true);
 
                     // Send a warning back to the user
                     try {
@@ -119,7 +119,7 @@ class FlowExecutor {
                             '⚠️ Please do not use abusive or inappropriate language. Your message has not been processed.'
                         );
                     } catch (warnErr) {
-                        global.slashLogs(`Failed to send profanity warning to ${userPhone}: ${warnErr.message}`, true, true);
+                        console.log(`Failed to send profanity warning to ${userPhone}: ${warnErr.message}`, true, true);
                     }
 
                     return; // Do not create conversation and do not store message
@@ -147,7 +147,7 @@ class FlowExecutor {
             // Use displayText (button/list title) when available, fall back to messageText (raw id or typed text)
             const adminDisplayMessage = displayText || messageText;
             if (global.io && !isPreview) {
-                global.slashLogs(`Broadcasting incoming message to admin live panel for conversationId: ${conversation.conversation_id}`, true, true);
+                console.log(`Broadcasting incoming message to admin live panel for conversationId: ${conversation.conversation_id}`, true, true);
                 global.io
                     .to(`admin:live:${flowId}`)
                     .emit('admin:incoming_message', {
@@ -167,7 +167,7 @@ class FlowExecutor {
             await this.executeFlow(conversation, flowId, messageText, isPreview, previewService);
 
         } catch (error) {
-            global.slashLogs(`Error processing message: ${error.message}`, true, true);
+            console.log(`Error processing message: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -175,14 +175,14 @@ class FlowExecutor {
 
     // Start a new conversation
     async startConversation(flowId, userPhone, userName, platformUserId, channel) {
-        global.slashLogs(`Starting new conversation: ${flowId} for userPhone: ${userPhone}`, true, true);
+        console.log(`Starting new conversation: ${flowId} for userPhone: ${userPhone}`, true, true);
 
         // Dynamically determine the start node from flow data
         const flow = await this.flowRepository.findById(flowId);
         const flowData = typeof flow.flow_data === 'string' ? JSON.parse(flow.flow_data) : flow.flow_data;
         const startNodeId = flowData.nodes.find(n => n.type === 'start')?.id || flowData.nodes[0]?.id;
 
-        global.slashLogs(`Start node determined: ${startNodeId} for flowId: ${flowId}`, true, true);
+        console.log(`Start node determined: ${startNodeId} for flowId: ${flowId}`, true, true);
 
         const conversation = await this.conversationRepository.createConversation({
             flow_id: flowId,
@@ -209,7 +209,7 @@ class FlowExecutor {
             // Get flow
             const flow = await this.flowRepository.findById(flowId);
             if (!flow) {
-                global.slashLogs(`Flow not found: ${flowId}`, true, true);
+                console.log(`Flow not found: ${flowId}`, true, true);
                 return;
             }
 
@@ -222,7 +222,7 @@ class FlowExecutor {
             if (isPreview && previewService) {
                 // Use preview service for testing
                 messagingService = previewService;
-                global.slashLogs('[PREVIEW MODE] Using PreviewService', true, true);
+                console.log('[PREVIEW MODE] Using PreviewService', true, true);
             } else {
                 // Get user configuration for WhatsApp service
                 const UserRepository = require('../repositories/UserRepository');
@@ -230,7 +230,7 @@ class FlowExecutor {
                 const user = await userRepository.findById(flow.user_id);
 
                 // if (!user || !user.whatsapp_api_key || !user.whatsapp_phone_number_id) {
-                //     global.slashLogs(`User WhatsApp configuration missing: ${flow.user_id}`, true, true);
+                //     console.log(`User WhatsApp configuration missing: ${flow.user_id}`, true, true);
                 //     return;
                 // }
 
@@ -261,7 +261,7 @@ class FlowExecutor {
                 const currentNode = flowData.nodes.find((n) => n.id === currentNodeId);
 
                 if (!currentNode) {
-                    global.slashLogs(`Node not found in flow: ${currentNodeId} for flowId: ${flowId}`, true, true);
+                    console.log(`Node not found in flow: ${currentNodeId} for flowId: ${flowId}`, true, true);
                     break;
                 }
 
@@ -277,7 +277,7 @@ class FlowExecutor {
                 );
 
 
-                global.slashLogs(`Node processed: ${currentNodeId} for flowId: ${flowId} also result ${result}`, true, true);
+                console.log(`Node processed: ${currentNodeId} for flowId: ${flowId} also result ${result}`, true, true);
 
                 // ── Broadcast bot response to admin live panel
                 if (global.io && !isPreview) {
@@ -335,18 +335,18 @@ class FlowExecutor {
             }
 
             if (iterationCount >= maxIterations) {
-                global.slashLogs(`Flow execution exceeded max iterations for flowId: ${flowId} and conversationId: ${conversation.conversation_id}`, true, true);
+                console.log(`Flow execution exceeded max iterations for flowId: ${flowId} and conversationId: ${conversation.conversation_id}`, true, true);
             }
 
         } catch (error) {
-           global.slashLogs(`Error executing flow: ${error.message}`, true, true);
+           console.log(`Error executing flow: ${error.message}`, true, true);
             throw error;
         }
     }
 
     // Complete a conversation
     async completeConversation(conversationId, flowId) {
-        global.slashLogs(`Completing conversation for conversationId: ${conversationId} and flowId: ${flowId}`, true, true);
+        console.log(`Completing conversation for conversationId: ${conversationId} and flowId: ${flowId}`, true, true);
 
         await this.conversationRepository.completeConversation(conversationId);
         await this.analyticsRepository.trackConversationCompleted(flowId);
@@ -364,7 +364,7 @@ class FlowExecutor {
 
     // Abandon a conversation (timeout or error)
     async abandonConversation(conversationId, flowId) {
-        global.slashLogs(`Abandoning conversation for conversationId: ${conversationId} and flowId: ${flowId}`, true, true);
+        console.log(`Abandoning conversation for conversationId: ${conversationId} and flowId: ${flowId}`, true, true);
 
         await this.conversationRepository.abandonConversation(conversationId);
         await this.analyticsRepository.trackConversationAbandoned(flowId);
@@ -383,7 +383,7 @@ class FlowExecutor {
     // Handle human takeover
     async handleHumanTakeover(conversationId) {
         
-        global.slashLogs(`Human takeover initiated for conversationId: ${conversationId}`, true, true);
+        console.log(`Human takeover initiated for conversationId: ${conversationId}`, true, true);
     
         await this.conversationRepository.setHumanTakeover(conversationId);
     }

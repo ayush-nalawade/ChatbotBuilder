@@ -20,7 +20,7 @@ class AiBotService {
                 },
             ];
 
-            global.slashLogs(
+            console.log(
                 `[AiBotService] Calling model=${aiModel} history_len=${conversationHistory.length}`,
                 true, true
             );
@@ -49,11 +49,11 @@ class AiBotService {
                 throw new Error('Empty reply from AI model');
             }
 
-            global.slashLogs(`[AiBotService] Reply generated: ${reply.substring(0, 80)}...`, true, true);
+            console.log(`[AiBotService] Reply generated: ${reply.substring(0, 80)}...`, true, true);
             return reply;
 
         } catch (error) {
-            global.slashLogs(`[AiBotService] Error generating reply: ${error.message}`, true, true);
+            console.log(`[AiBotService] Error generating reply: ${error.message}`, true, true);
             throw error;
         }
     }

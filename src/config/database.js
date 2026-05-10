@@ -54,11 +54,11 @@ class DatabaseConfig {
             await this.client.connect();
             this.isConnected = true;
 
-            global.slashLogs('Successfully connected to ScyllaDB', true, true);
+            console.log('Successfully connected to ScyllaDB', true, true);
 
             return this.client;
         } catch (error) {
-            global.slashLogs(`Failed to connect to ScyllaDB ${error.message}`, true, true);
+            console.log(`Failed to connect to ScyllaDB ${error.message}`, true, true);
             throw error;
         }
     }
@@ -91,7 +91,7 @@ class DatabaseConfig {
             });
             return result;
         } catch (error) {
-            global.slashLogs(`Database query error ${error.message} for query ${query} and params ${params}`, true, true);
+            console.log(`Database query error ${error.message} for query ${query} and params ${params}`, true, true);
             throw error;
         }
     }
@@ -108,7 +108,7 @@ class DatabaseConfig {
             });
             return result;
         } catch (error) {
-            global.slashLogs(`Database batch error ${error.message}`, true, true);
+            console.log(`Database batch error ${error.message}`, true, true);
             throw error;
         }
     }
@@ -121,7 +121,7 @@ class DatabaseConfig {
             await this.execute('SELECT now() FROM system.local');
             return true;
         } catch (error) {
-            global.slashLogs(`Database health check failed ${error.message}`, true, true);
+            console.log(`Database health check failed ${error.message}`, true, true);
             return false;
         }
     }

@@ -14,7 +14,7 @@ class VariableResolver {
         }
 
         const sessionData = parseSessionData(conversation);
-        global.slashLogs(`Session Data: ${JSON.stringify(sessionData)}`, true, true);
+        console.log(`Session Data: ${JSON.stringify(sessionData)}`, true, true);
         // Expose session data under the 'session' key so that {{session.xxx}} paths resolve correctly.
         // Both {{user_name}} and {{session.user_name}} will work.
         // old logic ::  const allData = { ...sessionData, ...additionalData };
@@ -28,7 +28,7 @@ class VariableResolver {
             const value = this.getNestedValue(allData, trimmedPath);
 
             if (value === null || value === undefined) {
-                global.slashLogs(`Variable not found: ${trimmedPath}`, true, true);
+                console.log(`Variable not found: ${trimmedPath}`, true, true);
                 return match; // Keep original placeholder if not found
             }
 

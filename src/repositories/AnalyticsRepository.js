@@ -26,9 +26,9 @@ class AnalyticsRepository {
 
             await this.db.execute(query, [incrementBy, flowId, date, metricName]);
 
-            global.slashLogs("Metric incremented", true, true);
+            console.log("Metric incremented", true, true);
         } catch (error) {
-            global.slashLogs("Error incrementing metric", true, true);
+            console.log("Error incrementing metric", true, true);
         }
     }
 
@@ -52,7 +52,7 @@ class AnalyticsRepository {
 
             return metrics;
         } catch (error) {
-            global.slashLogs("Error getting metrics by date", true, true);
+            console.log("Error getting metrics by date", true, true);
             return {};
         }
     }
@@ -95,7 +95,7 @@ class AnalyticsRepository {
 
             return Object.values(metricsByDate);
         } catch (error) {
-            global.slashLogs(`Error getting metrics range ${error.message}`, true, true);
+            console.log(`Error getting metrics range ${error.message}`, true, true);
             return [];
         }
     }
@@ -179,7 +179,7 @@ class AnalyticsRepository {
 
             return summary;
         } catch (error) {
-            global.slashLogs(`Error getting summary metrics ${error.message}`, true, true);
+            console.log(`Error getting summary metrics ${error.message}`, true, true);
             return {};
         }
     }

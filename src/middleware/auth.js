@@ -55,7 +55,7 @@ const authenticate = async (req, res, next) => {
 
         next();
     } catch (error) {
-        global.slashLogs(`Authentication failed ${error.message}`, true, true);
+        console.log(`Authentication failed ${error.message}`, true, true);
         if (error instanceof AuthenticationError) {
             return res.status(401).json(error.toJSON());
         }

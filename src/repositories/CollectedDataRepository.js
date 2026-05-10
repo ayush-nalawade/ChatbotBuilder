@@ -45,7 +45,7 @@ class CollectedDataRepository extends BaseRepository {
                 node_id: nodeId,
             };
         } catch (error) {
-            global.slashLogs(`Error saving collected variable ${error.message}`, true, true);
+            console.log(`Error saving collected variable ${error.message}`, true, true);
             throw error;
         }
     }
@@ -58,7 +58,7 @@ class CollectedDataRepository extends BaseRepository {
             const result = await this.db.execute(query, [conversationId]);
             return result.rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error getting collected data ${error.message}`, true, true);
+            console.log(`Error getting collected data ${error.message}`, true, true);
             throw error;
         }
     }
@@ -79,7 +79,7 @@ class CollectedDataRepository extends BaseRepository {
 
             return result.rows[0].variable_value;
         } catch (error) {
-            global.slashLogs(`Error getting variable ${error.message}`, true, true);
+            console.log(`Error getting variable ${error.message}`, true, true);
             throw error;
         }
     }
@@ -96,7 +96,7 @@ class CollectedDataRepository extends BaseRepository {
 
             return result;
         } catch (error) {
-            global.slashLogs(`Error getting collected data as object ${error.message}`, true, true);
+            console.log(`Error getting collected data as object ${error.message}`, true, true);
             throw error;
         }
     }
@@ -106,9 +106,9 @@ class CollectedDataRepository extends BaseRepository {
         try {
             const query = `DELETE FROM ${this.tableName} WHERE conversation_id = ?`;
             await this.db.execute(query, [conversationId]);
-            global.slashLogs(`Deleted collected data for conversation ${conversationId}`, true, true);
+            console.log(`Deleted collected data for conversation ${conversationId}`, true, true);
         } catch (error) {
-            global.slashLogs(`Error deleting collected data ${error.message}`, true, true);
+            console.log(`Error deleting collected data ${error.message}`, true, true);
             throw error;
         }
     }

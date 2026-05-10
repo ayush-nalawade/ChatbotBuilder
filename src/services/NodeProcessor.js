@@ -24,7 +24,7 @@ class NodeProcessor {
     // Process a node and return next node ID
     async processNode(node, conversation, flow, userInput = null) {
 
-        global.slashLogs(`Processing node: ${node.id} for conversationId: ${conversation.conversation_id}`, true, true);
+        console.log(`Processing node: ${node.id} for conversationId: ${conversation.conversation_id}`, true, true);
 
         switch (node.type) {
             case NODE_TYPES.MESSAGE:
@@ -58,7 +58,7 @@ class NodeProcessor {
                 return await this.processAiBotNode(node, conversation, flow, userInput);
 
             default:
-                global.slashLogs(`Unknown node type ${node.type}`, true, true);
+                console.log(`Unknown node type ${node.type}`, true, true);
                 return { nextNodeId: null, shouldWaitForInput: false };
         }
     }
@@ -147,7 +147,7 @@ class NodeProcessor {
 
         // Normalize email to lowercase
         if (node.data.validation_type === 'email') {
-            global.slashLogs(`Normalizing email to lowercase: ${userInput}`, true, true);
+            console.log(`Normalizing email to lowercase: ${userInput}`, true, true);
             userInput = userInput.toLowerCase();
         }
 
@@ -169,7 +169,7 @@ class NodeProcessor {
                 userInput
             );
         } else {
-            global.slashLogs(`Question node ${node.id} has no variable_name set; skipping session save.`, true, true);
+            console.log(`Question node ${node.id} has no variable_name set; skipping session save.`, true, true);
         }
 
         return {
@@ -211,7 +211,7 @@ class NodeProcessor {
         const selectedButton = node.data.buttons.find((btn) => btn.id === userInput);
 
         if (!selectedButton) {
-            global.slashLogs(`Invalid button selection: ${userInput} for nodeId: ${node.id} — resending buttons`, true, true);
+            console.log(`Invalid button selection: ${userInput} for nodeId: ${node.id} — resending buttons`, true, true);
             // Resend the button message so the user sees the options again
             const message = VariableResolver.resolve(node.data.message, conversation);
             const buttons = node.data.buttons.map((btn) => ({
@@ -300,7 +300,7 @@ class NodeProcessor {
         }
 
         if (!selectedItem) {
-            global.slashLogs(`Invalid list selection: ${userInput} for nodeId: ${node.id} — resending list`, true, true);
+            console.log(`Invalid list selection: ${userInput} for nodeId: ${node.id} — resending list`, true, true);
             // Resend the list message so the user sees the options again
             const message = VariableResolver.resolve(node.data.message, conversation);
             const buttonText = VariableResolver.resolve(node.data.button_text, conversation);
@@ -327,7 +327,7 @@ class NodeProcessor {
 
         // Save selection if variable name is specified
         if (node.data.variable_name) {
-            global.slashLogs(`Saving variable: ${node.data.variable_name} for nodeId: ${node.id}`, true, true);
+            console.log(`Saving variable: ${node.data.variable_name} for nodeId: ${node.id}`, true, true);
             await this.collectedDataRepository.saveVariable(
                 conversation.conversation_id,
                 node.data.variable_name,
@@ -412,7 +412,7 @@ class NodeProcessor {
                 updatedSessionData,
             };
         } catch (error) {
-            global.slashLogs(`Webhook node processing failed: ${error.message} for nodeId: ${node.id}`, true, true);
+            console.log(`Webhook node processing failed: ${error.message} for nodeId: ${node.id}`, true, true);
 
             // Continue to next node even if webhook fails
             return {
@@ -425,7 +425,7 @@ class NodeProcessor {
     // Process DELAY node
     async processDelayNode(node, conversation, flow) {
         const delayMs = node.data.delay_seconds * 1000;
-        global.slashLogs(`Delaying for ${node.data.delay_seconds} seconds for conversationId: ${conversation.conversation_id}`, true, true);
+        console.log(`Delaying for ${node.data.delay_seconds} seconds for conversationId: ${conversation.conversation_id}`, true, true);
         await sleep(delayMs);
 
         return {
@@ -533,7 +533,7 @@ class NodeProcessor {
                 });
         }
 
-        global.slashLogs(
+        console.log(
             `[TalkToAgent] Agent request emitted for conversation: ${conversation.conversation_id}, ` +
             `timeout in ${timeoutMs / 1000}s, fallback: ${fallbackNodeId || 'end'}`,
             true, true
@@ -547,14 +547,14 @@ class NodeProcessor {
                 //Verify the conversation is still PENDING (admin may have accepted just now)
                 const freshConvo = await conversationRepo.findById(conversation.conversation_id);
                 if (!freshConvo || freshConvo.status !== CONVERSATION_STATUS.PENDING_AGENT) {
-                    global.slashLogs(
+                    console.log(
                         `[TalkToAgent] Timeout fired but conversation ${conversation.conversation_id} is no longer PENDING_AGENT — skipping.`,
                         true, true
                     );
                     return;
                 }
 
-                global.slashLogs(
+                console.log(
                     `[TalkToAgent] Timeout: no admin accepted conversation ${conversation.conversation_id}. Running fallback.`,
                     true, true
                 );
@@ -611,7 +611,7 @@ class NodeProcessor {
                     }
                 }
             } catch (err) {
-                global.slashLogs(`[TalkToAgent] Error during timeout handler: ${err.message}`, true, true);
+                console.log(`[TalkToAgent] Error during timeout handler: ${err.message}`, true, true);
             }
         }, timeoutMs);
 
@@ -657,7 +657,7 @@ class NodeProcessor {
         // ── Check for exit keyword — hand off to exit node
         const lowerInput = userInput.toLowerCase().trim();
         if (exitKeywords.length > 0 && exitKeywords.some(kw => lowerInput.includes(kw))) {
-            global.slashLogs(
+            console.log(
                 `[AI_BOT] Exit keyword detected: "${userInput}" → moving to exitNodeId: ${exitNodeId}`,
                 true, true
             );
@@ -680,7 +680,7 @@ class NodeProcessor {
                 model       : aiModel,
             });
         } catch (error) {
-            global.slashLogs(`[AI_BOT] AI call failed: ${error.message} — sending fallback`, true, true);
+            console.log(`[AI_BOT] AI call failed: ${error.message} — sending fallback`, true, true);
             aiReply = fallbackMessage;
         }
 
@@ -697,7 +697,7 @@ class NodeProcessor {
             node_id         : node.id,
         });
 
-        global.slashLogs(
+        console.log(
             `[AI_BOT] Reply sent to ${conversation.user_phone}: ${aiReply.substring(0, 60)}...`,
             true, true
         );

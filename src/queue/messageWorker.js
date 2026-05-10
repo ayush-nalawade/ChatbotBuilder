@@ -26,7 +26,7 @@ const stats = {
  */
 function startMessageWorker() {
     if (workerInstance) {
-        global.slashLogs('[Worker] Already running — skipping duplicate start', true, true);
+        console.log('[Worker] Already running — skipping duplicate start', true, true);
         return workerInstance;
     }
 
@@ -37,7 +37,7 @@ function startMessageWorker() {
         QUEUE_NAME,
         async (job) => {
             const { webhookData } = job.data;
-            global.slashLogs(`[Worker] Processing job ${job.id} (attempt ${job.attemptsMade + 1})`, true, true);
+            console.log(`[Worker] Processing job ${job.id} (attempt ${job.attemptsMade + 1})`, true, true);
 
             const flowExecutor      = new FlowExecutor();
             const flowRepository    = new FlowRepository();
@@ -54,19 +54,19 @@ function startMessageWorker() {
 
     workerInstance.on('completed', (job) => {
         stats.processed++;
-        global.slashLogs(`[Worker] Job ${job.id} completed`, true, true);
+        console.log(`[Worker] Job ${job.id} completed`, true, true);
     });
 
     workerInstance.on('failed', (job, err) => {
         stats.failed++;
-        global.slashLogs(
+        console.log(
             `[Worker] Job ${job?.id} failed (attempt ${job?.attemptsMade}/${job?.opts?.attempts}): ${err.message}`,
             true, true
         );
     });
 
     workerInstance.on('error', (err) => {
-        global.slashLogs(`[Worker] Internal error: ${err.message}`, true, true);
+        console.log(`[Worker] Internal error: ${err.message}`, true, true);
     });
 
     // ── QueueEvents — monitors the queue on a separate connection
@@ -76,14 +76,14 @@ function startMessageWorker() {
     });
 
     queueEventsInstance.on('waiting', ({ jobId }) => {
-        global.slashLogs(`[QueueEvents] Job ${jobId} is waiting`, true, true);
+        console.log(`[QueueEvents] Job ${jobId} is waiting`, true, true);
     });
 
     queueEventsInstance.on('stalled', ({ jobId }) => {
-        global.slashLogs(`[QueueEvents] Job ${jobId} stalled — will be retried`, true, true);
+        console.log(`[QueueEvents] Job ${jobId} stalled — will be retried`, true, true);
     });
 
-    global.slashLogs(`[Worker] Started (concurrency: ${WORKER_CONCURRENCY})`, true, true);
+    console.log(`[Worker] Started (concurrency: ${WORKER_CONCURRENCY})`, true, true);
     return workerInstance;
 }
 
@@ -96,7 +96,7 @@ async function processWhatsAppJob(webhookData, flowExecutor, flowRepository, mes
         const messageData = WhatsAppService.parseIncomingMessage(webhookData);
 
         if (messageData) {
-            global.slashLogs(`[Worker] Message from ${messageData.from}`, true, true);
+            console.log(`[Worker] Message from ${messageData.from}`, true, true);
 
             const entry         = webhookData.entry?.[0];
             const change        = entry?.changes?.[0];
@@ -108,7 +108,7 @@ async function processWhatsAppJob(webhookData, flowExecutor, flowRepository, mes
             const flow = await flowRepository.getFlowByWhatsAppNumber(phoneNumberId);
 
             if (!flow) {
-                global.slashLogs(`[Worker] No active published flow for phone_number_id: ${phoneNumberId}`, true, true);
+                console.log(`[Worker] No active published flow for phone_number_id: ${phoneNumberId}`, true, true);
                 return;
             }
 
@@ -145,12 +145,12 @@ async function processWhatsAppJob(webhookData, flowExecutor, flowRepository, mes
         const statusData = WhatsAppService.parseStatusUpdate(webhookData);
 
         if (statusData) {
-            global.slashLogs(`[Worker] Status update: ${statusData.status} for msg ${statusData.messageId}`, true, true);
+            console.log(`[Worker] Status update: ${statusData.status} for msg ${statusData.messageId}`, true, true);
             await messageRepository.updateByWhatsAppMessageId(statusData.messageId, statusData.status);
         }
 
     } catch (error) {
-        global.slashLogs(`[Worker] Job error: ${error.message}`, true, true);
+        console.log(`[Worker] Job error: ${error.message}`, true, true);
         throw error; // Re-throw so BullMQ retries according to backoff config
     }
 }
@@ -189,12 +189,12 @@ async function getWorkerStats() {
 async function stopMessageWorker() {
     if (queueEventsInstance) {
         await queueEventsInstance.close();
-        global.slashLogs('[Worker] QueueEvents closed', true, true);
+        console.log('[Worker] QueueEvents closed', true, true);
     }
     if (workerInstance) {
         await workerInstance.close();
         workerInstance = null;
-        global.slashLogs('[Worker] Worker stopped gracefully', true, true);
+        console.log('[Worker] Worker stopped gracefully', true, true);
     }
 }
 

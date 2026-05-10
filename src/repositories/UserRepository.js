@@ -38,7 +38,7 @@ class UserRepository extends BaseRepository {
 
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error finding user by email ${error.message}`, true, true);
+            console.log(`Error finding user by email ${error.message}`, true, true);
             throw error;
         }
     }
@@ -109,7 +109,7 @@ class UserRepository extends BaseRepository {
                 });
             }
         } catch (error) {
-            global.slashLogs(`Error decrementing flow count ${error.message}`, true, true);
+            console.log(`Error decrementing flow count ${error.message}`, true, true);
         }
     }
 
@@ -123,7 +123,7 @@ class UserRepository extends BaseRepository {
                 });
             }
         } catch (error) {
-            global.slashLogs(`Error incrementing conversation count ${error.message}`, true, true);
+            console.log(`Error incrementing conversation count ${error.message}`, true, true);
         }
     }
 

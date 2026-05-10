@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 3006;
 const startServer = async () => {
     try {
         // Connect to database
-        global.slashLogs(`Connecting to ScyllaDB...`, true, true);
+        console.log(`Connecting to ScyllaDB...`, true, true);
         await databaseConfig.connect();
-        global.slashLogs(`Connected to ScyllaDB successfully`, true, true);
+        console.log(`Connected to ScyllaDB successfully`, true, true);
 
         // Create HTTP server and attach Socket.IO
         const server = http.createServer(app);
@@ -33,26 +33,26 @@ const startServer = async () => {
 
         // Start listening
         server.listen(PORT, () => {
-            global.slashLogs(`Server running on port ${PORT}`, true, true);
+            console.log(`Server running on port ${PORT}`, true, true);
         });
 
         // Graceful shutdown
         const gracefulShutdown = async (signal) => {
-            global.slashLogs(`${signal} received, shutting down gracefully...`, true, true);
+            console.log(`${signal} received, shutting down gracefully...`, true, true);
 
             server.close(async () => {
-                global.slashLogs('HTTP server closed', true, true);
+                console.log('HTTP server closed', true, true);
 
                 // Close database connection
                 await databaseConfig.disconnect();
-                global.slashLogs('Database connection closed', true, true);
+                console.log('Database connection closed', true, true);
 
                 process.exit(0);
             });
 
             // Force shutdown after 10 seconds
             setTimeout(() => {
-                global.slashLogs('Forced shutdown after timeout', true, true);
+                console.log('Forced shutdown after timeout', true, true);
                 process.exit(1);
             }, 10000);
         };
@@ -63,18 +63,18 @@ const startServer = async () => {
 
         // Handle uncaught exceptions
         process.on('uncaughtException', (error) => {
-            global.slashLogs('Uncaught exception', true, true);
+            console.log('Uncaught exception', true, true);
             process.exit(1);
         });
 
         // Handle unhandled promise rejections
         process.on('unhandledRejection', (reason, promise) => {
-            global.slashLogs('Unhandled rejection', true, true);
+            console.log('Unhandled rejection', true, true);
             process.exit(1);
         });
 
     } catch (error) {
-        global.slashLogs('Failed to start server', true, true);
+        console.log('Failed to start server', true, true);
         process.exit(1);
     }
 };

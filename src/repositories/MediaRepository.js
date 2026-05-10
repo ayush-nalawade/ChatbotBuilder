@@ -26,7 +26,7 @@ class MediaRepository {
                 createdAt,
             ], { prepare: true });
 
-            global.slashLogs(`Media saved: ${mediaId}`, true, true);
+            console.log(`Media saved: ${mediaId}`, true, true);
 
             return {
                 mediaId,
@@ -37,7 +37,7 @@ class MediaRepository {
                 createdAt,
             };
         } catch (error) {
-            global.slashLogs(`Media save error: ${error.message}`, true, true);
+            console.log(`Media save error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -61,7 +61,7 @@ class MediaRepository {
                 createdAt : row.created_at,
             };
         } catch (error) {
-            global.slashLogs(`Media findById error: ${error.message}`, true, true);
+            console.log(`Media findById error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -84,7 +84,7 @@ class MediaRepository {
                 createdAt : row.created_at,
             }));
         } catch (error) {
-            global.slashLogs(`Media findByUser error: ${error.message}`, true, true);
+            console.log(`Media findByUser error: ${error.message}`, true, true);
             throw error;
         }
     }
@@ -94,10 +94,10 @@ class MediaRepository {
         try {
             const query = 'DELETE FROM media_assets WHERE media_id = ?';
             await databaseConfig.execute(query, [mediaId], { prepare: true });
-            global.slashLogs(`Media deleted: ${mediaId}`, true, true);
+            console.log(`Media deleted: ${mediaId}`, true, true);
             return true;
         } catch (error) {
-            global.slashLogs(`Media deleteById error: ${error.message}`, true, true);
+            console.log(`Media deleteById error: ${error.message}`, true, true);
             throw error;
         }
     }

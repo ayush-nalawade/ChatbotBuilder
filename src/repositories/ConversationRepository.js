@@ -55,7 +55,7 @@ class ConversationRepository extends BaseRepository {
             const idleMs = Date.now() - lastActivity;
 
             if (idleMs > DEFAULTS.SESSION_TIMEOUT) {
-                global.slashLogs(
+                console.log(
                     `Session timed out for conversationId: ${conversation.conversation_id} ` +
                     `(idle ${Math.round(idleMs / 60000)} min). Marking as ABANDONED.`,
                     true, true
@@ -66,7 +66,7 @@ class ConversationRepository extends BaseRepository {
 
             return conversation;
         } catch (error) {
-            global.slashLogs(`Error getting active conversation ${error.message}`, true, true);
+            console.log(`Error getting active conversation ${error.message}`, true, true);
             throw error;
         }
     }
@@ -79,7 +79,7 @@ class ConversationRepository extends BaseRepository {
             const result = await this.db.execute(query, [flowId, limit]);
             return result.rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error getting conversations by flow ${error.message}`, true, true);
+            console.log(`Error getting conversations by flow ${error.message}`, true, true);
             throw error;
         }
     }
@@ -92,7 +92,7 @@ class ConversationRepository extends BaseRepository {
             const result = await this.db.execute(query, [userPhone, limit]);
             return result.rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error getting conversations by phone ${error.message}`, true, true);
+            console.log(`Error getting conversations by phone ${error.message}`, true, true);
             throw error;
         }
     }
@@ -160,7 +160,7 @@ class ConversationRepository extends BaseRepository {
             const result = await this.db.execute(query, [status, limit]);
             return result.rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error getting conversations by status ${error.message}`, true, true);
+            console.log(`Error getting conversations by status ${error.message}`, true, true);
             throw error;
         }
     }
@@ -183,7 +183,7 @@ class ConversationRepository extends BaseRepository {
             }
             return rows.map((row) => this.mapRow(row));
         } catch (error) {
-            global.slashLogs(`Error getting active conversations by flow ${error.message}`, true, true);
+            console.log(`Error getting active conversations by flow ${error.message}`, true, true);
             throw error;
         }
     }
@@ -202,7 +202,7 @@ class ConversationRepository extends BaseRepository {
             if (result.rows.length === 0) return null;
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error finding human takeover conversation ${error.message}`, true, true);
+            console.log(`Error finding human takeover conversation ${error.message}`, true, true);
             return null;
         }
     }
@@ -221,7 +221,7 @@ class ConversationRepository extends BaseRepository {
             if (result.rows.length === 0) return null;
             return this.mapRow(result.rows[0]);
         } catch (error) {
-            global.slashLogs(`Error finding pending agent conversation ${error.message}`, true, true);
+            console.log(`Error finding pending agent conversation ${error.message}`, true, true);
             return null;
         }
     }

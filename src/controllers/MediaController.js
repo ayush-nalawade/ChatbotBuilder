@@ -24,7 +24,7 @@ class MediaController {
             const { originalname, mimetype, size, buffer } = req.file;
             const userId = req.user.id;
 
-            global.slashLogs(
+            console.log(
                 `[MediaController] Upload: user=${userId} file=${originalname} size=${size} type=${mimetype}`,
                 true, true
             );
@@ -64,12 +64,12 @@ class MediaController {
         try {
             const { id } = req.params;
 
-            global.slashLogs(`[MediaController] Serve request: mediaId=${id}`, true, true);
+            console.log(`[MediaController] Serve request: mediaId=${id}`, true, true);
 
             const media = await mediaRepository.findById(id);
 
             if (!media) {
-                global.slashLogs(`[MediaController] Media not found: mediaId=${id}`, true, true);
+                console.log(`[MediaController] Media not found: mediaId=${id}`, true, true);
                 return res.status(404).json({
                     success : false,
                     error   : { code: 'NOT_FOUND', message: 'Media not found.' },
@@ -84,7 +84,7 @@ class MediaController {
 
             return res.send(media.fileData);
         } catch (error) {
-            global.slashLogs(`[MediaController] serve error: ${error.message}`, true, true);
+            console.log(`[MediaController] serve error: ${error.message}`, true, true);
             return res.status(500).json({
                 success : false,
                 error   : { code: 'SERVE_FAILED', message: error.message },
@@ -96,7 +96,7 @@ class MediaController {
     async list(req, res) {
         try {
 
-            global.slashLogs(`Media list request`, true, true);
+            console.log(`Media list request`, true, true);
             const userId = req.user.id;
 
             const assets = await mediaRepository.findByUser(userId);
@@ -107,13 +107,13 @@ class MediaController {
                 url : buildMediaUrl(req, asset.mediaId),
             }));
 
-            global.slashLogs(`Media list response: ${JSON.stringify(data)}`, true, true);
+            console.log(`Media list response: ${JSON.stringify(data)}`, true, true);
             return res.status(200).json({
                 success : true,
                 data,
             });
         } catch (error) {
-            global.slashLogs(`Media list error: ${error.message}`, true, true);
+            console.log(`Media list error: ${error.message}`, true, true);
             return res.status(500).json({
                 success : false,
                 error   : { code: 'LIST_FAILED', message: error.message },
@@ -146,14 +146,14 @@ class MediaController {
 
             await mediaRepository.deleteById(id);
 
-            global.slashLogs(`[MediaController] Deleted mediaId=${id} by user=${userId}`, true, true);
+            console.log(`[MediaController] Deleted mediaId=${id} by user=${userId}`, true, true);
 
             return res.status(200).json({
                 success : true,
                 message : 'Media deleted successfully.',
             });
         } catch (error) {
-            global.slashLogs(`[MediaController] delete error: ${error.message}`, true, true);
+            console.log(`[MediaController] delete error: ${error.message}`, true, true);
             return res.status(500).json({
                 success : false,
                 error   : { code: 'DELETE_FAILED', message: error.message },

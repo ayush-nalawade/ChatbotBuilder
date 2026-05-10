@@ -21,7 +21,7 @@ const addRequestId = (req, res, next) => {
  */
 const stream = {
     write: (message) => {
-        global.slashLogs(message.trim(), false, false);
+        console.log(message.trim(), false, false);
     },
 };
 

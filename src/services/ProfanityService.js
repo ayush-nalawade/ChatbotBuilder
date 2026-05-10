@@ -23,7 +23,7 @@ class ProfanityService {
         const model  = process.env.OPENROUTER_MODEL || 'google/gemma-3-27b-it:free';
 
         if (!apiKey) {
-            global.slashLogs('OPENROUTER_API_KEY is not set, falling back to local profanity check', true, true);
+            console.log('OPENROUTER_API_KEY is not set, falling back to local profanity check', true, true);
             return leoProfanity.check(message);
         }
 
@@ -60,15 +60,15 @@ class ProfanityService {
                 }
             );
             
-            global.slashLogs(`AI profanity response body: ${JSON.stringify(response.data)}`, true, true);
+            console.log(`AI profanity response body: ${JSON.stringify(response.data)}`, true, true);
             const reply = response.data?.choices?.[0]?.message?.content?.trim().toUpperCase();
-            global.slashLogs(`AI profanity check for "${message}" → ${reply}`, true, true);
+            console.log(`AI profanity check for "${message}" → ${reply}`, true, true);
 
             return reply === 'YES';
         } catch (error) {
             const status   = error.response?.status;
             const body     = JSON.stringify(error.response?.data || {});
-            global.slashLogs(`AI profanity check failed [${status}]: ${error.message} | Response: ${body} — falling back to local`, true, true);
+            console.log(`AI profanity check failed [${status}]: ${error.message} | Response: ${body} — falling back to local`, true, true);
             return leoProfanity.check(message);
         }
     }
