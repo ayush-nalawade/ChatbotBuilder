@@ -1,0 +1,28 @@
+const express = require('express');
+const flowRoutes = require('./flows');
+const userRoutes = require('./users');
+const webhookRoutes = require('./webhooks');
+const previewRoutes = require('./preview');
+const liveChatRoutes = require('./liveChat');
+
+const router = express.Router();
+
+// Health check
+router.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+    });
+});
+
+// routes
+router.use('/flows', flowRoutes);
+router.use('/auth', userRoutes);
+router.use('/users', userRoutes);
+router.use('/webhooks', webhookRoutes);
+router.use('/preview', previewRoutes);
+router.use('/live', liveChatRoutes);
+router.use('/whatsapp', require('./whatsapp'));
+router.use('/media', require('./media'));
+
+module.exports = router;
